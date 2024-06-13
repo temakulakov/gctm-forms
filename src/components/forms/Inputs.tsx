@@ -49,7 +49,7 @@ export const Input: React.FC<InputProps> = ({ title, options, state, setState, i
         style={{ marginBottom: 16 }}
       />
       <TextArea
-        placeholder={'Введите текст'}
+        placeholder={'Комментаий'}
         value={comments[id]}
         onChange={handleTextChange}
         style={{ height: 100, marginTop: 8 }}
