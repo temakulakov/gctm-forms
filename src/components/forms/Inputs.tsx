@@ -34,7 +34,7 @@ export const Input: React.FC<InputProps> = ({ title, options, state, setState, i
 
     return (
         <>
-            <p>{title}</p>
+            <p style={{ margin: '0 0 15px 0'}}>{`${id}. ${title}`}</p>
             <AutoComplete
                 style={{ width: '100%' }}
                 options={formattedOptions}
@@ -47,9 +47,9 @@ export const Input: React.FC<InputProps> = ({ title, options, state, setState, i
             >
            
                 <TextArea
-                    placeholder={title}
+                    placeholder={'Введите текст'}
                     className="custom"
-                    style={{ height: 50 }}
+                    style={{ height: 30 }}
                 />
             </AutoComplete>
         </>

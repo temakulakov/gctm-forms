@@ -4,14 +4,17 @@ import { useState } from 'react';
 import styles from './Form.module.scss';
 
 interface IFormProps {
-    IQ: IQuestion[]
+    IQ: IQuestion[];
+    title: string;
 }
 
-const Form = ({IQ}: IFormProps) => {
+const Form = ({IQ, title}: IFormProps) => {
     const [answers, setAnswers] = useState<string[]>(IQ.map(() => ''));
 
     return (
-        <Row gutter={[16, 16]} justify="center" className={styles.container} style={{ padding: '0 20px'}}>
+        <>
+            <h2 style={{textAlign: 'center'}}>{title}</h2>
+            <Row gutter={[16, 16]} justify="center" className={styles.container} style={{ padding: '20px'}}>
             {IQ.map(el => (
                 <Col xs={24} sm={12} md={12} lg={12} xl={12} key={el.id} >
                     <Input
@@ -24,6 +27,7 @@ const Form = ({IQ}: IFormProps) => {
                 </Col>
             ))}
         </Row>
+        </>
     );
 };
 
