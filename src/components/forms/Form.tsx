@@ -40,7 +40,7 @@ const Form = ({ IQ, title }: IFormProps) => {
   return (
     <>
       <h2 style={{ textAlign: 'center' }}>{title}</h2>
-      <Row gutter={[16, 16]} justify="center" className={styles.container} style={{ padding: '20px' }}>
+      <Row gutter={[16, 16]}  className={styles.container} style={{ padding: '20px' }}>
         {IQ.map((el, index) => (
           <Col xs={24} sm={12} md={12} lg={12} xl={12} key={`col-${el.id}`}>
             <Input
