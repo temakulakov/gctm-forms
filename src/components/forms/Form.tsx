@@ -119,7 +119,7 @@ const Form = ({ IQ, title, contactID }: IFormProps) => {
         ))}
       </Row>
       <Row justify="center" style={{ marginTop: '20px' }}>
-        <Button type="primary" onClick={sendEmail}>
+        <Button type="primary" onClick={sendEmail} className={styles.Button}>
           Отправить письмо
         </Button>
       </Row>
