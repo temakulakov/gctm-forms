@@ -1,6 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Row, Col } from 'antd';
+import { AnimatePresence, motion } from 'framer-motion';
 import styles from './App.module.scss';
 import Form from './components/forms/Form';
 
@@ -26,7 +27,7 @@ const formsArray: Array<FormMenu> = [
     {id: 11, title: 'Детский и Кукольный Театры фасад и окна, световые окна', options: ['Чисто', 'нет новых повреждений, освещение работает.']},
     {id: 12, title: 'Ворота 7 и калитка 7, каменная ограда и забор', options: ['Чисто', 'нет новых повреждений']},
     {id: 13, title: 'Тротуары вдоль территории Музея', options: ['Чисто', 'нет новых повреждений, проваливающихся элементов']},
-]} /> },
+  ]} /> },
   { id: 2, title: "Территория квартала", description: 'qweoinfqwief qweoifnqweofin qweoifnqweoinf', component: <Form title={'Территория квартала'} IQ={[
     {id: 1, title: 'Территория вокруг ЦТИ', options: ['Чисто', 'нет новых повреждений, фонари работают (уличные, ландшафтные)', 'скамейки без новых повреждений', 'плитка и резиновое покрытие без повреждений, закреплены', 'колодцы и решётки водостоков – на месте, закреплены', 'садовые насаждения (нет завявших, повреждённых, затоптанных)']},
     {id: 2, title: 'Фасад ЦТИ', options: ['Чисто', 'нет новых повреждений, освещение работает']},
@@ -120,46 +121,65 @@ const formsArray: Array<FormMenu> = [
   ]} /> },
 ];
 
-
-
 const Menu: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Row gutter={[16, 16]} justify="center">
-      {
-        formsArray.map((el) => (
-          <Col xs={24} sm={12} md={8} lg={6} xl={4} key={el.id}>
-            <div
-              className={styles.element}
-              onClick={() => navigate(`/${el.id}`)}
-            >
-              <h1>{el.title}</h1>
-              <div className={styles.description}>
-                {el.description}
-              </div>
-              <button>{'Заполнить'}</button>
+    <Row gutter={[16, 16]} justify="center" style={{ marginTop: '2vh' }}>
+      {formsArray.map((el) => (
+        <Col xs={24} sm={12} md={8} lg={6} xl={4} key={el.id}>
+          <div
+            className={styles.element}
+            onClick={() => navigate(`/${el.id}`)}
+          >
+            <h1>{el.title}</h1>
+            <div className={styles.description}>
+              {el.description}
             </div>
-          </Col>
-        ))
-      }
+            <button>{'Заполнить'}</button>
+          </div>
+        </Col>
+      ))}
     </Row>
   );
 };
 
-const App: React.FC = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Menu />} />
-        {formsArray.map((el) => (
-          <Route key={el.id} path={`/${el.id}`} element={el.component} />
-        ))}
-      </Routes>
-    </Router>
-  );
+const pageTransition = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  exit: { opacity: 0, y: -20, transition: { duration: 0.4 } },
 };
 
+const AnimatedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <motion.div
+    variants={pageTransition}
+    initial="hidden"
+    animate="visible"
+    exit="exit"
+  >
+    {children}
+  </motion.div>
+);
 
+const App: React.FC = () => (
+  <Router>
+    <AnimatedApp />
+  </Router>
+);
+
+const AnimatedApp: React.FC = () => {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<AnimatedRoute><Menu /></AnimatedRoute>} />
+        {formsArray.map((el) => (
+          <Route key={el.id} path={`/${el.id}`} element={<AnimatedRoute>{el.component}</AnimatedRoute>} />
+        ))}
+      </Routes>
+    </AnimatePresence>
+  );
+};
 
 export default App;
