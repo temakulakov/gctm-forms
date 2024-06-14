@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Modal } from 'antd';
 import axios from 'axios';
 import { Input } from './Inputs';
 import styles from './Form.module.scss';
@@ -17,9 +17,17 @@ interface IFormProps {
   contactID: number;
 }
 
+const success = () => {
+  Modal.success({
+    content: 'Письмо успешно отправлено на HELPDESK!',
+  });
+};
+
 const Form = ({ IQ, title, contactID }: IFormProps) => {
   const [answers, setAnswers] = useState<string[]>(IQ.map(() => ''));
   const [comments, setComments] = useState<string[]>(IQ.map(() => ''));
+
+  
 
   useEffect(() => {
     console.log('Answers State: ', answers);
@@ -27,7 +35,7 @@ const Form = ({ IQ, title, contactID }: IFormProps) => {
   }, [answers, comments]);
 
   const sendEmail = async (): Promise<void> => {
-    const apiUrl = 'https://intranet.gctm.ru/rest/1552/shmn8un2eq3g119r/crm.activity.add';
+    const apiUrl = 'https://intranet.gctm.ru/rest/2040/9fvw3ej70d178dun/crm.activity.add';
     const contactId = 16752; // ID контакта
     const currentDateTime = dayjs().format('DD.MM.YYYY HH:mm');
     const subject = `${currentDateTime} заполнил форму ${title}`;
@@ -36,11 +44,11 @@ const Form = ({ IQ, title, contactID }: IFormProps) => {
       const comment = comments[index].trim() ? `Комментарий: ${comments[index]}` : 'Комментарий: Не заполнено';
       return `${question.title}\n${answer}\n${comment}`;
     }).join('\n\n');
-    const responsibleId = 1552; // Ваш ID или ID ответственного сотрудника
+    const responsibleId = 2040; // Ваш ID или ID ответственного сотрудника
   
     try {
       // Сначала получаем данные контакта
-      const contactResponse = await axios.post('https://intranet.gctm.ru/rest/1552/shmn8un2eq3g119r/crm.contact.get', {
+      const contactResponse = await axios.post('https://intranet.gctm.ru/rest/2040/9fvw3ej70d178dun/crm.contact.get', {
         id: contactId
       });
   
@@ -50,7 +58,7 @@ const Form = ({ IQ, title, contactID }: IFormProps) => {
         throw new Error('Contact data is incomplete');
       }
   
-      const userResponse = await axios.post('https://intranet.gctm.ru/rest/1552/shmn8un2eq3g119r/user.get', {
+      const userResponse = await axios.post('https://intranet.gctm.ru/rest/2040/9fvw3ej70d178dun/user.get', {
         filter: {
           ID: contactData.ASSIGNED_BY_ID
         }
@@ -85,12 +93,13 @@ const Form = ({ IQ, title, contactID }: IFormProps) => {
           END_TIME: new Date(Date.now() + 3600 * 1000).toISOString(), // Плюс 1 час
           RESPONSIBLE_ID: responsibleId,
           SETTINGS: {
-            MESSAGE_FROM: `${userData.NAME} ${userData.LAST_NAME} <${userData.EMAIL}>`
+            MESSAGE_FROM: `Проверка здания <check@gctm.ru>`
           }
         }
       });
   
       if (response.data.result) {
+        success();
         return Promise.resolve();
       } else {
         return Promise.reject(new Error(response.data.error_description || 'Failed to send email'));
@@ -103,7 +112,10 @@ const Form = ({ IQ, title, contactID }: IFormProps) => {
   return (
     <>
       <h2 style={{ textAlign: 'center' }}>{title}</h2>
-      <Row gutter={[16, 16]} className={styles.container} style={{ padding: '20px' }}>
+      <Row gutter={[16, 16]} 
+        className={styles.container} 
+        style={{ padding: '20px', marginRight: 0 }}
+      >
         {IQ.map((el, index) => (
           <Col xs={24} sm={12} md={12} lg={12} xl={12} key={`col-${el.id}`}>
             <Input
@@ -118,10 +130,12 @@ const Form = ({ IQ, title, contactID }: IFormProps) => {
           </Col>
         ))}
       </Row>
-      <Row justify="center" style={{ marginTop: '20px' }}>
-        <Button type="primary" onClick={sendEmail} className={styles.Button}>
+      <Row justify="center" 
+        style={{ marginTop: '20px' }}
+      >
+        <button  onClick={sendEmail} className={styles.Button}>
           Отправить письмо
-        </Button>
+        </button>
       </Row>
     </>
   );

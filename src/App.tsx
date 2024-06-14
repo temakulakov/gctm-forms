@@ -88,18 +88,16 @@ const Menu: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Row gutter={[16, 16]} justify="center" style={{ marginTop: '2vh' }}>
+    <Row gutter={[16, 16]} justify="center" style={{ marginRight: 0,  marginTop: '2vh' }}>
       {formsArray.map((el) => (
-        <Col xs={24} sm={12} md={8} lg={6} xl={4} key={el.id}>
+        <Col xs={24} sm={24} md={24} lg={24} xl={24} key={el.id}>
           <div
             className={styles.element}
             onClick={() => navigate(`/${el.id}`)}
           >
-            <h1>{el.title}</h1>
-            <div className={styles.description}>
-              {el.description}
-            </div>
-            <button>{'Заполнить'}</button>
+            <h1>{`${el.id}.${el.title}`}</h1>
+            
+            <button className={styles.Button}>{'Заполнить'}</button>
           </div>
         </Col>
       ))}
