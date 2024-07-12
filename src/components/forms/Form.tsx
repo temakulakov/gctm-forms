@@ -35,7 +35,7 @@ const Form = ({ IQ, title, contactID }: IFormProps) => {
   }, [answers, comments]);
 
   const sendEmail = async (): Promise<void> => {
-    const apiUrl = 'https://intranet.gctm.ru/rest/2040/9fvw3ej70d178dun/crm.activity.add';
+    const apiUrl = 'https://intranet.bakhrushinmuseum.ru/rest/2040/9fvw3ej70d178dun/crm.activity.add';
     const contactId = 16752; // ID контакта
     const currentDateTime = dayjs().format('DD.MM.YYYY HH:mm');
     const subject = `${currentDateTime} заполнил форму ${title}`;
